@@ -32,6 +32,13 @@ if __name__ == "__main__":
 
     x = torch.randint(low=0, high=vocab_size, size=(batch_size, args.max_seq_len), dtype=torch.long, device=device)
     targets = torch.randint(low=0, high=vocab_size, size=(batch_size, args.max_seq_len), dtype=torch.long, device=device)
+
+    for i in range(args.num_warmup):
+        logits = model(x)
+        loss = cross_entropy(logits.view(-1, vocab_size), targets.view(-1)) # inputs: [B*T, vocab_size]. targets: [B*T, ]
+        loss.backward()
+
+    optimizer = AdamW(params=model.parameters())
     
     forward_times = []
     backward_times = []
