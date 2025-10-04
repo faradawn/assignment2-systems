@@ -1,0 +1,11 @@
+# with out flash
+(main) root@C.26456717:/workspace/assignment2-systems$ python -m cs336_systems.benchmarking_script --num_epochs 3 --max_seq_len 512 --batch_size 32
+Namespace(num_warmup=5, num_epochs=3, max_seq_len=512, batch_size=32, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+{'forward_time': 0.04115739034023136, 'backward_time': 0.11804254399612546, 'forward_var': np.float64(0.0006335242118693804), 'backward_var': np.float64(0.0008095282717128912)}
+
+# with flash
+main) root@C.26456717:/workspace/assignment2-systems$ python -m cs336_systems.benchmarking_script --num_epochs 3 --max_seq_len 512 --batch_size 32
+Namespace(num_warmup=5, num_epochs=3, max_seq_len=512, batch_size=32, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+{'forward_time': 0.030667890678159893, 'backward_time': 0.06308463995810598, 'forward_var': np.float64(0.00015803204919741026), 'backward_var': np.float64(0.0007254067181752187)}
