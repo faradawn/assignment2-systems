@@ -1,0 +1,25 @@
+(main) root@C.26456717:/workspace/assignment2-systems$ python -m cs336_systems.benchmarking_script --max_seq_len 1024 --batch_size 64
+Namespace(num_warmup=5, num_epochs=10, max_seq_len=1024, batch_size=64, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+{'forward_time': 0.04078430641675368, 'backward_time': 0.2561250220169313, 'forward_var': np.float64(0.002226446938820012), 'backward_var': np.float64(0.0015022121295549238)}
+(main) root@C.26456717:/workspace/assignment2-systems$ 
+(main) root@C.26456717:/workspace/assignment2-systems$ 
+(main) root@C.26456717:/workspace/assignment2-systems$ 
+(main) root@C.26456717:/workspace/assignment2-systems$ 
+(main) root@C.26456717:/workspace/assignment2-systems$ 
+(main) root@C.26456717:/workspace/assignment2-systems$ python -m cs336_systems.benchmarking_script --max_seq_len 1024 --batch_size 64
+Namespace(num_warmup=5, num_epochs=10, max_seq_len=1024, batch_size=64, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/assignment2-systems/cs336_systems/benchmarking_script.py", line 40, in <module>
+    loss = cross_entropy(logits.view(-1, vocab_size), targets.view(-1)) # inputs: [B*T, vocab_size]. targets: [B*T, ]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/assignment2-systems/cs336-basics/cs336_basics/nn_utils.py", line 16, in cross_entropy
+    negative_log_softmax_logits = -log_softmax(inputs)
+                                   ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/assignment2-systems/cs336-basics/cs336_basics/nn_utils.py", line 12, in log_softmax
+    return x - torch.log(torch.sum(torch.exp(x), dim=dim, keepdim=True))
+                                   ^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.22 GiB. GPU 0 has a total capacity of 79.44 GiB of which 855.75 MiB is free. Process 4157086 has 78.59 GiB memory in use. Of the allocated memory 77.54 GiB is allocated by PyTorch, and 575.34 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

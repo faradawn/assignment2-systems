@@ -1,0 +1,17 @@
+# without flash attention
+python -m cs336_systems.benchmarking_script --num_epochs 10 --max_seq_len 512 --batch_size 64
+Namespace(num_warmup=5, num_epochs=10, max_seq_len=512, batch_size=64, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+{'forward_time': 0.03947995640337467, 'backward_time': 0.22792268870398402}
+
+
+# with flash attention
+
+python -m cs336_systems.benchmarking_script --num_epochs 10 --max_seq_len 512 --batch_size 64
+Namespace(num_warmup=5, num_epochs=10, max_seq_len=512, batch_size=64, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+{'forward_time': 0.030090896890033036, 'backward_time': 0.11899469931377098}
+
+# speedup
+forward: -0.237818386054 = 23.7% 
+backward: -0.477916393535 = 47.7%

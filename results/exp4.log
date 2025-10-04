@@ -1,0 +1,13 @@
+# without 
+python -m cs336_systems.benchmarking_script --num_epochs 10 --max_seq_len 512 --batch_size 64
+Namespace(num_warmup=5, num_epochs=10, max_seq_len=512, batch_size=64, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+{'forward_time': 0.36778060998767614, 'backward_time': 2.3129175449721515}
+
+
+# with
+with flash attention
+(main) root@C.26456717:/workspace/assignment2-systems$ python -m cs336_systems.benchmarking_script --num_epochs 10 --max_seq_len 512 --batch_size 64
+Namespace(num_warmup=5, num_epochs=10, max_seq_len=512, batch_size=64, d_model=768, d_ff=3072, num_layers=12, num_heads=12)
+device cuda
+{'forward_time': 0.3137357528321445, 'backward_time': 1.1663953780662268}
