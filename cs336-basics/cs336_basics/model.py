@@ -13,7 +13,8 @@ import torch.nn as nn
 from torch import Tensor
 from jaxtyping import Float, Bool, Int
 
-from flash_attn import flash_attn_qkvpacked_func, flash_attn_func
+# from flash_attn import flash_attn_qkvpacked_func, flash_attn_func
+import flashinfer
 
 
 
@@ -515,14 +516,22 @@ class CausalMultiHeadSelfAttention(nn.Module):
         kj = einx.rearrange('key   -> b... 1 1   key', seq, b=[1] * len(b))
         causal_mask = qi >= kj  # (query, key)
 
-        
+        # FlashInfer attention
         q = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', Q)
         k = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', K)
         v = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', V)
-
-        attn_output = flash_attn_func(q, k, v, dropout_p=0.0, softmax_scale=None, causal=False, window_size=(-1, -1), alibi_slopes=None, deterministic=False)
+        
+        attn_output = flashinfer.single_prefill_with_kv_cache(q, k, v, causal=False)
         attn_output = rearrange(attn_output, "batch seq heads d_v -> batch seq (heads d_v)").contiguous()
 
+        # Flash Attention (commented out)
+        # q = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', Q)
+        # k = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', K)
+        # v = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', V)
+        # attn_output = flash_attn_func(q, k, v, dropout_p=0.0, softmax_scale=None, causal=False, window_size=(-1, -1), alibi_slopes=None, deterministic=False)
+        # attn_output = rearrange(attn_output, "batch seq heads d_v -> batch seq (heads d_v)").contiguous()
+
+        # Scaled dot product attention (commented out)
         # attn_output = scaled_dot_product_attention(K=K, Q=Q, V=V, mask=causal_mask)
         # attn_output = rearrange(attn_output, "batch heads seq d_v -> batch seq (heads d_v)").contiguous()
 

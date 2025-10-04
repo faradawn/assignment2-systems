@@ -64,7 +64,7 @@ code's dependencies, run tests, and create a gzipped tarball with the output. We
 should be able to unzip your submitted tarball and run
 `./test_and_make_submission.sh` to verify your test results.
 
-# Commands
+### Original UV Commands
 ```
 source .venv/bin/activate
 
@@ -87,4 +87,15 @@ pip install -U einx jaxtyping
 
 python -m cs336_systems.benchmarking_script
 
+```
+
+### Vast AI Create another and add flashinfer
+```
+conda env list
+conda create -n flashinfer python=3.10 -y
+conda activate flashinfer
+
+pip install flashinfer-python
+
+pip install einx jaxtyping
 ```

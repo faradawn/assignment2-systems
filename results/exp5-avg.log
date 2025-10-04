@@ -12,6 +12,9 @@ Namespace(num_warmup=5, num_epochs=10, max_seq_len=512, batch_size=64, d_model=7
 device cuda
 {'forward_time': 0.030090896890033036, 'backward_time': 0.11899469931377098}
 
+# with flash infer
+{'forward_time': 0.03142123559955508, 'backward_time': 0.018406136392150073}
+
 # speedup
 forward: -0.237818386054 = 23.7% 
 backward: -0.477916393535 = 47.7%
