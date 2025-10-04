@@ -69,3 +69,22 @@ should be able to unzip your submitted tarball and run
 source .venv/bin/activate
 
 ```
+
+### Install flash attention in vast pytorch image
+```
+pip install --upgrade pip
+pip install packaging ninja
+pip install flash-attn --no-build-isolation
+
+python - <<'PY'
+import torch
+print("torch:", torch.__version__, "cuda:", torch.version.cuda)
+from flash_attn.flash_attn_interface import flash_attn_varlen_qkvpacked_func
+print("FlashAttention OK:", callable(flash_attn_varlen_qkvpacked_func))
+PY
+
+pip install -U einx jaxtyping
+
+python -m cs336_systems.benchmarking_script
+
+```

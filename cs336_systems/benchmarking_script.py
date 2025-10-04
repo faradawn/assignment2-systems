@@ -1,3 +1,6 @@
+import os, sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'cs336-basics')))
+
 from cs336_basics.model import BasicsTransformerLM
 from cs336_basics.optimizer import AdamW
 from cs336_basics.nn_utils import cross_entropy
