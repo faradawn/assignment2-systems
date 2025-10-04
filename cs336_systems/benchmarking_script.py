@@ -29,7 +29,7 @@ if __name__ == "__main__":
     batch_size = 4
     
 
-    model = BasicsTransformerLM(vocab_size=vocab_size, context_length=args.max_seq_len, d_model=args.d_model, num_layers=args.num_layers, num_heads=args.num_heads, d_ff=args.d_ff, rope_theta=1).to(device)
+    model = BasicsTransformerLM(vocab_size=vocab_size, context_length=args.max_seq_len, d_model=args.d_model, num_layers=args.num_layers, num_heads=args.num_heads, d_ff=args.d_ff, rope_theta=1).to(device).to(torch.bfloat16)
 
     optimizer = AdamW(params=model.parameters())
 
