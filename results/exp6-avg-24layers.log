@@ -1,0 +1,8 @@
+# Naive attention
+python -m cs336_systems.benchmarking_script --max_seq_len 512 --batch_size 64 --num_la
+yers 28
+
+0.10750382348196581
+
+# Flash attention
+0.06431007899809629

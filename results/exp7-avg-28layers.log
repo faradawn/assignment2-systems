@@ -1,0 +1,11 @@
+# Testing with 512 seq len and 64 batch size and 28 layers
+python -m cs336_systems.benchmarking_script --max_seq_len 512 --batch_size 64 --num_layers 28
+
+# Naive attention
+0.15647805269109086
+
+# Flash attention
+0.07245175620773807
+
+# Improvement
+-0.536984548557 = 53.6% = 2.15 times faster
