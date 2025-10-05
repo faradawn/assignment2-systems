@@ -16,5 +16,5 @@ device cuda
 {'forward_time': 0.03142123559955508, 'backward_time': 0.018406136392150073}
 
 # speedup
-forward: -0.237818386054 = 23.7% 
-backward: -0.477916393535 = 47.7%
+flashattention: -0.237818386054 = 23.7% 
+flashinfer: -0.204121826313 = 20.4%
