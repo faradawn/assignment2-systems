@@ -26,3 +26,7 @@ device cuda
 Warmup 3
 
 {'forward_time': 0.039643416500030074, 'backward_time': 0.04830947209998158, 'forward_var': np.float64(2.2877233540053166e-05), 'backward_var': np.float64(0.00014312291323110532)}
+
+## Question 2
+
+

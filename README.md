@@ -66,6 +66,6 @@ should be able to unzip your submitted tarball and run
 
 # Commands
 ```
+uv run python 
 source .venv/bin/activate
-
 ```
