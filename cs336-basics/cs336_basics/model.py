@@ -13,6 +13,9 @@ import torch.nn as nn
 from torch import Tensor
 from jaxtyping import Float, Bool, Int
 
+import flashinfer
+
+
 
 from .nn_utils import softmax
 
@@ -512,12 +515,17 @@ class CausalMultiHeadSelfAttention(nn.Module):
         kj = einx.rearrange('key   -> b... 1 1   key', seq, b=[1] * len(b))
         causal_mask = qi >= kj  # (query, key)
 
-        # Shape: (..., num_heads, sequence_length, d_k)
-        attn_output = scaled_dot_product_attention(K=K, Q=Q, V=V, mask=causal_mask)
+        q = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', Q)
+        k = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', K)
+        v = einx.rearrange('batch heads seq d_v -> batch seq heads d_v', V)
+        
+        # Naive attention
+        # attn_output = scaled_dot_product_attention(K=K, Q=Q, V=V, mask=causal_mask)
+        # attn_output = rearrange(attn_output, "batch heads seq d_v -> batch seq (heads d_v)").contiguous()
 
-        # Concatenate the attention output from all heads.
-        # (..., sequence_length, num_heads * d_v).
-        attn_output = rearrange(attn_output, "batch heads seq d_v -> batch seq (heads d_v)").contiguous()
+        # FlashInfer attention
+        attn_output = flashinfer.single_prefill_with_kv_cache(q, k, v, causal=True)
+        attn_output = rearrange(attn_output, "batch seq heads d_v -> batch seq (heads d_v)").contiguous()
 
         # Apply the output projection
         output = self.output_proj(attn_output)
