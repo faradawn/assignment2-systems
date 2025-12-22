@@ -1,6 +1,15 @@
 #include <iostream>
 #include <cuda_runtime.h>
 #include <algorithm>
+#include <cuda_runtime_api.h>
+
+
+#define CUDA_CHECK(expr) do {                                      \
+    cudaError_t result = (expr);                                     \
+    if (result != cudaSuccess) {                                     \
+      fprintf(stderr, "[Printing error]: %s\n",cudaGetErrorString(result));       \
+    }                                                                \
+  } while (0)
 
 __global__ void vecMult(float* w, float* x, float* res)
 {
@@ -60,10 +69,14 @@ int main()
 
     // step 1: element-wise vector product
     vecMult<<<1, 8192>>>(d_w, d_x, d_res);
+
+    CUDA_CHECK(cudaGetLastError());
+
+
     cudaDeviceSynchronize();
 
     // step 2: vector sum (reduce)
-    vecSum<<<1, 8192/2>>>(d_res);
+    // vecSum<<<1, 8192/2>>>(d_res);
 
     cudaMemcpy(res, d_res, vectorSize, cudaMemcpyDeviceToHost);
 
