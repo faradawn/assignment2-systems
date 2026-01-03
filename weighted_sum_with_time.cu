@@ -46,10 +46,10 @@ int main()
 
     // Record start event
     cudaEventRecord(start);
-    // 512, 256, 128 
-    // nsight
-    vecMult<<<8, 1024>>> (d_w, d_x, d_res); // 0.18
-    // vecMult<<<512, 16>>> (d_w, d_x, d_res); // 0.22
+
+    vecMult<<<8, 1024>>> (d_w, d_x, d_res); // 0.23 ms
+    // vecMult<<<64, 128>>> (d_w, d_x, d_res); // 0.57 ms
+    // vecMult<<<512, 16>>> (d_w, d_x, d_res); // 0.77 ms
 
     // Record stop event
     cudaEventRecord(stop);

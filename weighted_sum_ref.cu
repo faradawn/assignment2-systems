@@ -2,6 +2,8 @@
 #include <cuda_runtime.h>
 #include <algorithm>
 #include <cuda_runtime_api.h>
+
+
 #define CUDA_CHECK(expr) do {                                      \
     cudaError_t result = (expr);                                     \
     if (result != cudaSuccess) {                                     \
@@ -13,6 +15,26 @@ __global__ void vecMult(float* w, float* x, float* res)
 {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
     res[tid] = w[tid] * x[tid];
+}
+
+__global__ void vecSum(float* vec)
+{
+    int tid = threadIdx.x;
+    __shared__ float finalVec[8192];
+    
+    // Load data into shared memory
+    finalVec[tid] = vec[tid];
+    finalVec[tid + blockDim.x] = vec[tid + blockDim.x];
+    __syncthreads();
+    
+    for(int stride = 8192/2; stride > 0; stride >>= 1){
+        if(tid >= stride) break;
+
+        finalVec[tid] = finalVec[tid] + finalVec[tid + stride];
+        __syncthreads();
+    }
+    
+    vec[tid] = finalVec[tid];
 }
 
 int main()
@@ -27,7 +49,7 @@ int main()
 
     // init the values
     std::fill(x, x + vectorLength, 4.0f); 
-    std::fill(w, w + vectorLength, 0.2f);  
+    std::fill(w, w + vectorLength, 0.5f);  
 
     float *d_x, *d_w, *d_res;
     cudaMalloc(&d_x, vectorSize);
@@ -39,37 +61,34 @@ int main()
     cudaMemcpy(d_x, x, vectorSize, cudaMemcpyHostToDevice);
     cudaMemcpy(d_res, res, vectorSize, cudaMemcpyHostToDevice);
 
-    // Create CUDA events for timing
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
+    // why cannot 
+    // for(int i = 0; i < vectorLength; i++){
+    //     d_x[i] = x[i];
+    // }
 
-    // Record start event
-    cudaEventRecord(start);
-    // 512, 256, 128 
-    // nsight
-    vecMult<<<8, 1024>>> (d_w, d_x, d_res); // 0.18
-    // vecMult<<<512, 16>>> (d_w, d_x, d_res); // 0.22
 
-    // Record stop event
-    cudaEventRecord(stop);
-    cudaEventSynchronize(stop);
-
-    // Calculate elapsed time
-    float milliseconds = 0;
-    cudaEventElapsedTime(&milliseconds, start, stop);
-    printf("Kernel execution time: %f ms\n", milliseconds);
-
-    // Clean up events
-    cudaEventDestroy(start);
-    cudaEventDestroy(stop);
+    
+    vecMult<<<8, 1024>>> (d_w, d_x, d_res);
 
     CUDA_CHECK(cudaGetLastError());
 
-    // print result 
+
     cudaDeviceSynchronize();
+
+    // step 2: vector sum (reduce)
+    // vecSum<<<1, 8192/2>>>(d_res);
+
     cudaMemcpy(res, d_res, vectorSize, cudaMemcpyDeviceToHost);
+
     for(int i = 0; i < 5; i++){
         printf("%f ", res[i]);
     }
+    
+    // ✅ Cleanup
+    cudaFree(d_x);
+    cudaFree(d_w);
+    cudaFree(d_res);
+    cudaFreeHost(x);
+    cudaFreeHost(w);
+    cudaFreeHost(res);
 }
