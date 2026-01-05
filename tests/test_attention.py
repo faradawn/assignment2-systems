@@ -56,7 +56,7 @@ def _test_flash_forward_pass(impl, device="cpu", is_causal=False):
     assert o.shape == o_ref.shape
     assert l.shape == l_ref.shape
     
-    # torch.testing.assert_close(o, o_ref, rtol=1e-2, atol=1e-2)
+    torch.testing.assert_close(o, o_ref, rtol=1e-2, atol=1e-2)
     # torch.testing.assert_close(l, l_ref, rtol=1e-2, atol=1e-2)
 
 
